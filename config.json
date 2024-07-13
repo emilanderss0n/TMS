@@ -1,0 +1,45 @@
+{
+    "EnableCustomBotsHealth": true,
+    "//": "HEALTH FOR BOSSES",
+    "bossHealthMultiplier": 0.6,
+    "//": "HEALTH FOR BOSS FOLLOWERS",
+    "followerHealthMultiplier": 0.8,
+    "//": "HEALTH FOR BLOODHOUNDS, RAIDERS, CULTISTS, ROGUES",
+    "specialHealthMultiplier": 0.8,
+    "//": "HEALTH FOR PMC",
+    "pmcHealthMultiplier": 1.0,
+    "//": "HEALTH FOR SCAVS",
+    "scavHealthMultiplier": 0.7,
+
+    "EnableLostOnDeath": true,
+    "LostOnDeath": {
+        "ArmBand": false,
+        "Compass": false,
+        "Headwear": true,
+        "Earpiece": true,
+        "FaceCover": true,
+        "ArmorVest": true,
+        "Eyewear": true,
+        "TacticalVest": true,
+        "Backpack": true,
+        "Holster": true,
+        "FirstPrimaryWeapon": false,
+        "SecondPrimaryWeapon": true,
+        "Scabbard": false,
+        "QuestItems": true
+    },
+
+    "FUInertia": true,
+
+    "MakeRepairKitLessOverpowered": true,
+    "WeaponRepairKitMaxResource": 500,
+    "ArmorRepairKitMaxResource": 600,
+
+    "//": "SET BACKGROUND COLORS FOR AMMOS PEN VALUE",
+    "ColouredAmmo" : true,
+
+    "//": "STOP THE CHAT MESSAGES FROM FAKE BOTS",
+    "StopSendingKilledVictimMessages": true,
+
+    "DisableMagazineAmmoLoadPenalty": true
+}
