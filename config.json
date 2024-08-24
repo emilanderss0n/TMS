@@ -12,6 +12,7 @@
     "scavHealthMultiplier": 0.7,
 
     "EnableLostOnDeath": true,
+    "//": "COMPASS = POCKETS, SCABBARD = MELEE",
     "LostOnDeath": {
         "ArmBand": false,
         "Compass": false,
@@ -30,6 +31,26 @@
     },
 
     "FUInertia": true,
+
+    "HigherVaulting": true,
+
+    "MakeAllHeadsetsGood": true,
+    "//": "THE VALUES BELOW ARE A MIX BETWEEN MSA SORDIN AND PELTOR COMTAC 4 HEADSET",
+    "HeadsetValues": {
+        "Distortion": 0.13,
+        "CompressorTreshold": -31,
+        "CompressorAttack": 32,
+        "CompressorRelease": 140,
+        "CompressorGain": 9,
+        "CutoffFreq": 180,
+        "Resonance": 2.2,
+        "CompressorVolume": -3,
+        "AmbientVolume": -6,
+        "DryVolume": -55,
+        "RolloffMultiplier": 1.05,
+        "HighFrequenciesGain": 1.2,
+        "ReverbVolume": -40
+    },
 
     "MakeRepairKitLessOverpowered": true,
     "WeaponRepairKitMaxResource": 500,

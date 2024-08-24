@@ -69,6 +69,11 @@ class TMS implements IPreSptLoadMod, IPostDBLoadMod
           globals.Inertia.WalkInertia.y = 0.025
         }
 
+        if (configData.HigherVaulting) {
+            globals.VaultingSettings.MovesSettings.ClimbSettings.MoveRestrictions.MaxLength = 17;
+            globals.VaultingSettings.MovesSettings.ClimbSettings.MoveRestrictions.MaxHeight = 2.2;
+        }
+
         if (configData.EnableCustomBotsHealth)
         {
           const enemyTypes = tables.bots.types;
@@ -155,6 +160,28 @@ class TMS implements IPreSptLoadMod, IPostDBLoadMod
           }
         }
 
+        if (configData.MakeAllHeadsetsGood) {
+            const headsetValues = configData.HeadsetValues
+            for (const item in dbItems) {
+              if (dbItems[item]._parent == BaseClasses.HEADPHONES) {
+                const itemProps = dbItems[item]._props
+                itemProps.Distortion = headsetValues.Distortion
+                itemProps.CompressorTreshold = headsetValues.CompressorTreshold
+                itemProps.CompressorAttack = headsetValues.CompressorAttack
+                itemProps.CompressorRelease = headsetValues.CompressorRelease
+                itemProps.CompressorGain = headsetValues.CompressorGain
+                itemProps.CutoffFreq = headsetValues.CutoffFreq
+                itemProps.Resonance = headsetValues.Resonance
+                itemProps.CompressorVolume = headsetValues.CompressorVolume
+                itemProps.AmbientVolume = headsetValues.AmbientVolume
+                itemProps.DryVolume = headsetValues.DryVolume
+                itemProps.RolloffMultiplier = headsetValues.RolloffMultiplier
+                itemProps.HighFrequenciesGain = headsetValues.HighFrequenciesGain
+                itemProps.ReverbVolume = headsetValues.ReverbVolume
+              }
+            }
+        }
+
         if (configData.MakeRepairKitLessOverpowered)
         {
           const ArmorRepairKit = "591094e086f7747caa7bb2ef"
@@ -188,8 +215,8 @@ class TMS implements IPreSptLoadMod, IPostDBLoadMod
         if (configData.DisableMagazineAmmoLoadPenalty) {
             for (const item in dbItems) {
                 if (dbItems[item]._parent == BaseClasses.MAGAZINE) {
-                const itemProps = dbItems[item]._props
-                itemProps.LoadUnloadModifier = 0
+                    const itemProps = dbItems[item]._props
+                    itemProps.LoadUnloadModifier = 0
                 }
             }
         }
