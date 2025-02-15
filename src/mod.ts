@@ -8,12 +8,27 @@ import { ConfigTypes } from "@spt/models/enums/ConfigTypes";
 import { BaseClasses } from "@spt/models/enums/BaseClasses";
 import { ILostOnDeathConfig } from "@spt/models/spt/config/ILostOnDeathConfig";
 import { IBotConfig } from "@spt/models/spt/config/IBotConfig";
-import { IInventoryConfig } from "@spt/models/spt/config/IInventoryConfig";
-import { IInRaidConfig } from "@spt/models/spt/config/IInRaidConfig";
 
 import * as configData from "../config.json";
 
 class TMS implements IPreSptLoadMod, IPostDBLoadMod {
+
+    private readonly loadingMessages = [
+        "Time to bend Tarkovs rules harder than a scav bends to loot",
+        "Reshaping Tarkov like a chad reshapes his meta M4",
+        "Modifying Tarkov faster than Mechanic modifies guns",
+        "Breaking Tarkovs rules like a hatchling breaks containers",
+        "Tweaking settings smoother than Reshalas golden TT",
+        "Configuring Tarkov harder than a PMC configures his M4",
+        "Optimizing Tarkov harder than a rat optimizes his stash",
+        "Adjusting settings faster than a chad adjusts his sights",
+        "Tweaking Tarkov harder than a PMC tweaks his gear"
+    ];
+
+    private getRandomLoadingMessage(): string {
+        return this.loadingMessages[Math.floor(Math.random() * this.loadingMessages.length)];
+    }
+
     public configServer: ConfigServer;
     public container: DependencyContainer;
 
@@ -31,6 +46,7 @@ class TMS implements IPreSptLoadMod, IPostDBLoadMod {
         const globals = databaseServer.getTables().globals.config;
         const tables = databaseServer.getTables();
         const dbItems = tables.templates.items;
+        const enemyTypes = tables.bots.types;
 
         if (configData.EnableLostOnDeath) {
             const dbLODConfig = this.configServer.getConfig<ILostOnDeathConfig>(ConfigTypes.LOST_ON_DEATH);
@@ -168,6 +184,7 @@ class TMS implements IPreSptLoadMod, IPostDBLoadMod {
                     itemProps.RolloffMultiplier = headsetValues.RolloffMultiplier;
                     itemProps.HighpassFreq = headsetValues.HighpassFreq;
                     itemProps.HighpassResonance = headsetValues.HighpassResonance;
+                    itemProps.LowpassFreq = headsetValues.LowpassFreq;
                     itemProps.EQBand1Frequency = headsetValues.EQBand1Frequency;
                     itemProps.EQBand1Gain = headsetValues.EQBand1Gain;
                     itemProps.EQBand1Q = headsetValues.EQBand1Q;
@@ -177,7 +194,15 @@ class TMS implements IPreSptLoadMod, IPostDBLoadMod {
                     itemProps.EQBand3Frequency = headsetValues.EQBand3Frequency;
                     itemProps.EQBand3Gain = headsetValues.EQBand3Gain;
                     itemProps.EQBand3Q = headsetValues.EQBand3Q;
+                    itemProps.EffectsReturnsCompressorSendLevel = headsetValues.EffectsReturnsCompressorSendLevel;
+                    itemProps.EffectsReturnsGroupVolume = headsetValues.EffectsReturnsGroupVolume;
+                    itemProps.EnvCommonCompressorSendLevel = headsetValues.EnvCommonCompressorSendLevel;
+                    itemProps.EnvNatureCompressorSendLevel = headsetValues.EnvNatureCompressorSendLevel;
+                    itemProps.EnvTechnicalCompressorSendLevel = headsetValues.EnvTechnicalCompressorSendLevel;
+                    itemProps.GunsCompressorSendLevel = headsetValues.GunsCompressorSendLevel;
+                    itemProps.HeadphonesMixerVolume = headsetValues.HeadphonesMixerVolume;
                     itemProps.AmbientCompressorSendLevel = headsetValues.AmbientCompressorSendLevel;
+                    itemProps.ClientPlayerCompressorSendLevel = headsetValues.ClientPlayerCompressorSendLevel;
                 }
             }
         }
@@ -218,6 +243,15 @@ class TMS implements IPreSptLoadMod, IPostDBLoadMod {
             }
         }
 
+        if (configData.WeightlessAmmo) {
+            for (const item in dbItems) {
+                if (dbItems[item]._parent === BaseClasses.AMMO) {
+                    const itemProps = dbItems[item]._props;
+                    itemProps.Weight = 0;
+                }
+            }
+        }
+
         if (configData.DisableMagazineAmmoLoadPenalty) {
             for (const item in dbItems) {
                 if (dbItems[item]._parent === BaseClasses.MAGAZINE) {
@@ -227,31 +261,81 @@ class TMS implements IPreSptLoadMod, IPostDBLoadMod {
             }
         }
 
-        if (configData.StopSendingKilledVictimMessages) {
-            const pmcchatvictimServer = container.resolve("ConfigServer").configs["spt-pmcchatresponse"];
-            pmcchatvictimServer["victim"] = {
-                responseChancePercent: 0,
-                responseTypeWeights: {
-                    positive: 0,
-                    negative: 0,
-                    plead: 0
-                },
-                stripCapitalisationChancePercent: 0,
-                allCapsChancePercent: 0,
-                appendBroToMessageEndChancePercent: 0
-            };
-            const pmcchatkillerServer = container.resolve("ConfigServer").configs["spt-pmcchatresponse"];
-            pmcchatkillerServer["killer"] = {
-                responseChancePercent: 0,
-                responseTypeWeights: {
-                    positive: 0,
-                    negative: 0,
-                    plead: 0
-                },
-                stripCapitalisationChancePercent: 0,
-                allCapsChancePercent: 0,
-                appendBroToMessageEndChancePercent: 0
-            };
+        if (configData.AdjustBotGrenades) {
+            const botGrenadePrecisionValue = Math.max(0, configData.BotGrenadePrecision);
+            const botGrenadePerMeterValue = Math.max(0, configData.BotGrenadePerMeter);
+
+            try {
+                for (const key in enemyTypes) {
+                    if (!enemyTypes.hasOwnProperty(key)) continue;
+
+                    const bot = enemyTypes[key];
+                    const difficulties = bot?.difficulty;
+
+                    if (difficulties) {
+                        ['easy', 'normal', 'hard', 'impossible'].forEach(level => {
+                            if (difficulties[level]?.Grenade) {
+                                difficulties[level].Grenade.GrenadePrecision = botGrenadePrecisionValue;
+                                difficulties[level].Grenade.GrenadePerMeter = botGrenadePerMeterValue;
+                            }
+                        });
+                    }
+                }
+            } catch (error) {
+                logger.error(`Error adjusting bot grenades: ${error.message}`);
+            }
+        }
+
+        if (configData.MakeForegripsEqual) {
+            const ForegripsErgo = configData.ForegripsErgo;
+            const ForegripsRecoil = configData.ForegripsRecoil;
+
+            try {
+                for (const item in dbItems) {
+                    if (!dbItems.hasOwnProperty(item)) continue;
+
+                    const currentItem = dbItems[item];
+                    if (!currentItem?._props) continue;
+
+                    if (currentItem._parent === BaseClasses.FOREGRIP) {
+                        currentItem._props.Ergonomics = ForegripsErgo;
+                        currentItem._props.Recoil = ForegripsRecoil;
+                    }
+                }
+            } catch (error) {
+                logger.error(`Error adjusting foregrips: ${error.message}`);
+            }
+        }
+
+        if (configData.FixExtraSize) {
+            for (const item in dbItems) {
+                if (dbItems[item]._parent === BaseClasses.MAGAZINE) {
+                    if (dbItems[item]._id == "6513f0a194c72326990a3868") {
+                        const itemProps = dbItems[item]._props;
+                        itemProps.ExtraSizeDown = 0;
+                    }
+                    if (dbItems[item]._id == "646372518610c40fc20204e8") {
+                        const itemProps = dbItems[item]._props;
+                        itemProps.ExtraSizeDown = 1;
+                    }
+                    if (dbItems[item]._id == "5a37ca54c4a282000d72296a") {
+                        const itemProps = dbItems[item]._props;
+                        itemProps.ExtraSizeUp = 0;
+                    }
+                    if (dbItems[item]._id == "5aa66c72e5b5b00016327c93") {
+                        const itemProps = dbItems[item]._props;
+                        itemProps.ExtraSizeUp = 0;
+                    }
+                    if (dbItems[item]._id == "61713cc4d8e3106d9806c109") {
+                        const itemProps = dbItems[item]._props;
+                        itemProps.ExtraSizeUp = 0;
+                    }
+                    if (dbItems[item]._id == "6171407e50224f204c1da3c5") {
+                        const itemProps = dbItems[item]._props;
+                        itemProps.ExtraSizeUp = 0;
+                    }
+                }
+            }
         }
 
         if (configData.EnableCustomBotCaps) {
@@ -271,36 +355,16 @@ class TMS implements IPreSptLoadMod, IPostDBLoadMod {
             dbBotConfig.maxBotCap.default = configData.MaxBotCaps.default;
         }
 
-        if (configData.EnableGPCoinsInBotWallets) {
-            const dbBotConfig = this.configServer.getConfig<IBotConfig>(ConfigTypes.BOT);
+        if (configData.EnableMoreItemsSicc) {
+            const SICC = tables.templates.items["5d235bb686f77443f4331278"];
+            const filterArray = SICC["_props"]["Grids"][0]["_props"]["filters"][0]["Filter"];
 
-            // Ensure GP coins are in the wallet pool
-            if (!dbBotConfig.walletLoot.walletTplPool.includes("5d235b4d86f7742e017bc88a")) {
-                dbBotConfig.walletLoot.walletTplPool.push("5d235b4d86f7742e017bc88a");
-            }
-
-            // Add GP coin currency weight
-            dbBotConfig.walletLoot.currencyWeight["5d235b4d86f7742e017bc88a"] = 15;
-
-            // Create separate stack size weights for GP coins
-            const gpCoinStackSizeWeights = {
-                "1": 25,
-                "2": 25,
-                "3": 20,
-                "4": 15,
-                "5": 10,
-                "8": 5
-            };
-
-            // Merge with existing stack weights instead of overwriting
-            dbBotConfig.walletLoot.stackSizeWeight = {
-                ...dbBotConfig.walletLoot.stackSizeWeight,
-                ...gpCoinStackSizeWeights
-            };
+            const newValuesToAdd = configData.AddTheseToPouch;
+            filterArray.push(...newValuesToAdd);
         }
 
         logger.info("---------------------------------------------------");
-        logger.info("TMS - Loaded Successfully");
+        logger.info(`TMS Loaded - ${this.getRandomLoadingMessage()}`);
         logger.info("---------------------------------------------------");
     }
 }
