@@ -1,19 +1,19 @@
 {
-  "EnableCustomBotsHealth": false,
+  "EnableCustomBotsHealth": true,
   "//": "HEALTH FOR BOSSES",
-  "bossHealthMultiplier": 0.7,
+  "bossHealthMultiplier": 0.68,
   "//": "HEALTH FOR BOSS FOLLOWERS",
-  "followerHealthMultiplier": 0.8,
+  "followerHealthMultiplier": 0.7,
   "//": "HEALTH FOR BLOODHOUNDS, RAIDERS, CULTISTS, ROGUES",
-  "specialHealthMultiplier": 0.8,
+  "specialHealthMultiplier": 0.64,
   "//": "HEALTH FOR PMC",
   "pmcHealthMultiplier": 1.0,
   "//": "HEALTH FOR SCAVS",
   "scavHealthMultiplier": 0.7,
   "//": "HEALTH FOR INFECTED (EVENT)",
-  "infectedHealthMultiplier": 0.7,
+  "infectedHealthMultiplier": 0.45,
 
-  "EnableLostOnDeath": false,
+  "EnableLostOnDeath": true,
   "//": "SCABBARD = MELEE",
   "LostOnDeath": {
     "ArmBand": true,
@@ -25,18 +25,19 @@
     "TacticalVest": true,
     "Backpack": true,
     "Holster": true,
-    "FirstPrimaryWeapon": true,
+    "FirstPrimaryWeapon": false,
     "SecondPrimaryWeapon": true,
     "Scabbard": false,
     "SpecialSlotItems": false,
-    "QuestItems": true
+    "QuestItems": true,
+    "PocketItems": true
   },
 
-  "FUInertia": false,
+  "FUInertia": true,
 
-  "HigherVaulting": false,
+  "HigherVaulting": true,
 
-  "MakeAllHeadsetsGood": false,
+  "MakeAllHeadsetsGood": true,
   "//": "THE VALUES BELOW ARE A MIX BETWEEN MSA SORDIN AND PELTOR COMTAC VI HEADSET",
   "HeadsetValues": {
     "Distortion": 0.08,
@@ -71,37 +72,41 @@
     "ClientPlayerCompressorSendLevel": -7
   },
 
-  "MakeRepairKitLessOverpowered": false,
+  "MakeRepairKitLessOverpowered": true,
   "WeaponRepairKitMaxResource": 500,
   "ArmorRepairKitMaxResource": 600,
 
   "//": "SET BACKGROUND COLORS FOR AMMOS PEN VALUE",
-  "ColouredAmmo": false,
+  "ColouredAmmo": true,
 
   "//": "AMMO WEIGHT ZERO",
-  "WeightlessAmmo": false,
+  "WeightlessAmmo": true,
 
   "//": "DISABLE MAGAZINES PENALTIES FOR LOADING AMMO SPEED IN RAID",
-  "DisableMagazineAmmoLoadPenalty": false,
+  "DisableMagazineAmmoLoadPenalty": true,
 
   "//": "ADJUST BOTS GRENADE PRCISION",
-  "AdjustBotGrenades": false,
+  "AdjustBotGrenades": true,
   "//": "Grenade throw accuracy, less is more accurate. Around 0.1 is default",
   "BotGrenadePrecision": 0.45,
   "//": "Grenade throw level, less is more accurate. Around 0.15 is default",
   "BotGrenadePerMeter": 0.25,
 
   "//": "MAKE ALL FOREGRIPS HAVE SIMILAR STATS",
-  "MakeForegripsEqual": false,
+  "MakeForegripsEqual": true,
   "ForegripsErgo": 8,
   "ForegripsRecoil": -3,
 
   "//": "FIXES GRID PREVIEW FOR ITEMS THAT SHOULD NOT HAVE VERTICAL EXTRA SIZE, WHICH MAKES WEAPONS LOOK A BIT TOO BULKY IN STASH. THIS IS SAFE TO SET TRUE BUT SETTING FROM TRUE TO FALSE CAN MAKE YOU LOSE THE ITEM POSITION IN STASH IF TOO LITTLE SPACE IS GIVEN TO THE WEAPON AFFECTED.",
   "//": "AFFECTED ITEMS: JP Enterprises Flat-Top 30mm ring scope mount, Nightforce Magmount 34mm ring scope mount with Ruggedized Accessory Platform, Recknagel Era-Tac 34mm ring scope mount, Recknagel Era-Tac 30mm ring scope mount, RPD 7.62x39 Buben 100-round box, PK 7.62x54R 100-round box",
-  "FixExtraSize": false,
+  "FixExtraSize": true,
+  "FixExtraSizeExtendedMags": true,
 
-  "//": "BOT CAPS CAN BE OVERWRITTEN BY MANY OTHER MODS. IF YOU WANT TO USE THIS, DISABLE OTHER MODS THAT CHANGE BOT CAPS. IF YOU USE OTHER MODS (SPAWN OR AI -MODS), DISABLE THIS.",
-  "EnableCustomBotCaps": false,
+  "//": "CONVERT EXTENDED MAGAZINES THAT HAVE 3x1 SIZE TO 2x1 SIZE, MAKING THEM SHORTER IN HEIGHT (YOU HAVE TO CLEAR CACHE IN LAUNCHER IF YOU WANT GOOD LOOKING THUMBNAILS IN STASH FOR THE ITEMS AFFECTED)",
+  "ExtendedMagsTwoSlotsHeight": false,
+
+  "//": "BOT CAPS CAN BE OVERWRITTEN BY MANY OTHER MODS. IF YOU WANT TO USE THIS, DISABLE OTHER MODS THAT CHANGE BOT CAPS. IF YOU USE OTHER MODS (SPAWN OR AI -MODS), DISABLE THIS",
+  "EnableCustomBotCaps": true,
   "MaxBotCaps": {
     "factory4_day": 15,
     "factory4_night": 15,
@@ -159,5 +164,8 @@
       "6638a5474e92f038531e210e",
       "66b37ea4c5d72b0277488439",
       "590c639286f774151567fa95"
-  ]
+  ],
+
+  "LegaMedalInsideMoneyCase": true
+  
 }
