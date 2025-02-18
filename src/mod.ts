@@ -240,10 +240,15 @@ class TMS implements IPreSptLoadMod, IPostDBLoadMod {
                     }
 
                     itemProps.BackgroundColor = colour;
+                }
+            }
+        }
 
-                    if (configData.WeightlessAmmo) {
-                        itemProps.Weight = 0;
-                    }
+        if (configData.WeightlessAmmo) {
+            for (const item in dbItems) {
+                if (dbItems[item]._parent === BaseClasses.AMMO) {
+                    const itemProps = dbItems[item]._props;
+                    itemProps.Weight = 0;
                 }
             }
         }
@@ -313,14 +318,6 @@ class TMS implements IPreSptLoadMod, IPostDBLoadMod {
                     if (dbItems[item]._id == "646372518610c40fc20204e8") {
                         itemProps.ExtraSizeDown = 1;
                     }
-                    if (configData.FixExtraSizeExtendedMags) {
-                        if (itemProps.Height === 3 && itemProps.Width === 1) {
-                            itemProps.ExtraSizeDown = 1;
-                            if (configData.ExtendedMagsTwoSlotsHeight) {
-                                itemProps.Height = 2;
-                            }
-                        }
-                    }
                 }
                 if (dbItems[item]._parent === BaseClasses.MOUNT) {
                     const itemProps = dbItems[item]._props;
@@ -335,6 +332,20 @@ class TMS implements IPreSptLoadMod, IPostDBLoadMod {
                     }
                     if (dbItems[item]._id == "6171407e50224f204c1da3c5") {
                         itemProps.ExtraSizeUp = 0;
+                    }
+                }
+            }
+        }
+
+        if (configData.FixExtraSizeExtendedMags) {
+            for (const item in dbItems) {
+                if (dbItems[item]._parent === BaseClasses.MAGAZINE) {
+                    const itemProps = dbItems[item]._props;
+                    if (itemProps.Height === 3 && itemProps.Width === 1) {
+                        itemProps.ExtraSizeDown = 1;
+                        if (configData.ExtendedMagsTwoSlotsHeight) {
+                            itemProps.Height = 2;
+                        }
                     }
                 }
             }
